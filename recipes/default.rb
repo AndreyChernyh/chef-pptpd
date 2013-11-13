@@ -35,3 +35,15 @@ execute 'reload-sysctl' do
   command 'sysctl --system'
   action :nothing
 end
+
+template '/etc/rc.local' do
+  source 'rc.local.erb'
+  variables network: node['pptpd']['localip'],
+            iface: node['network']['default_interface']
+  notifies :run, 'execute[rc.local]'
+end
+
+execute 'rc.local' do
+  command '/etc/rc.local'
+  action :nothing
+end
